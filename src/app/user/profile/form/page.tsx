@@ -142,6 +142,8 @@ export default function Example() {
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <TextBox
+                  id=""
+                  formik=""
                   label="First Name"
                   name="first_name"
                   placeholder="Please enter first name"
@@ -150,6 +152,8 @@ export default function Example() {
 
               <div className="sm:col-span-3">
                 <TextBox
+                  id=""
+                  formik=""
                   label="Last Name"
                   name="last_name"
                   placeholder="Please enter last name"
@@ -158,6 +162,8 @@ export default function Example() {
 
               <div className="sm:col-span-4">
                 <TextBox
+                  id=""
+                  formik=""
                   label="Email"
                   name="email"
                   placeholder="Please enter email"
@@ -172,6 +178,7 @@ export default function Example() {
                   onChange={() => {}}
                   loadOptions={loadOptions}
                   placeholder={"Enter City"}
+                  istouched=""
                 />
               </div>
 
@@ -180,7 +187,7 @@ export default function Example() {
                   label="Address"
                   name="street"
                   placeholder="Please enter address with street or colony name"
-
+                  istouched=""
                   // defaultRows={5}
                 />
               </div>
