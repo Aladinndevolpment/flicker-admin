@@ -35,14 +35,14 @@ export async function middleware(request: NextRequest) {
     });
   } catch (e: any) {
     console.log("cookie here");
-    if (
-      e.response.includes(
-        "Cookies can only be modified in a Server Action or Route Handler"
-      )
-    ) {
-      console.log("cookie error -- bypassing.");
-      return response;
-    }
+    // if (
+    //   e.response.includes(
+    //     "Cookies can only be modified in a Server Action or Route Handler"
+    //   )
+    // ) {
+    //   console.log("cookie error -- bypassing.");
+    //   return response;
+    // }
     request.cookies.clear();
     console.log(e);
     return loginURL;
