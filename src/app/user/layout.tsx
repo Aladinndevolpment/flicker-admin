@@ -14,5 +14,9 @@ export default async function UserLayout({
 
   const user = await decrypt(userData?.value);
   console.log(user);
-  return <DashboardLayout>{children}</DashboardLayout>;
+  return (
+    <DashboardLayout>
+      {user.full_name} {children}
+    </DashboardLayout>
+  );
 }

@@ -1,6 +1,5 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
-import { encrypt, decrypt } from "./utils/crypto";
+import { NextResponse, NextRequest } from "next/server";
+import { encrypt } from "./utils/crypto";
 import APIController from "./controllers/remote_controller";
 import APIRoutes from "./constants/api_routes";
 
