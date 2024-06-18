@@ -27,7 +27,7 @@ export async function login(values: any) {
 }
 
 export async function logout() {
-  console.log("here");
+  // console.log("here");
   await cookies().delete("session");
   await cookies().delete("user");
   return redirect("/auth/login");

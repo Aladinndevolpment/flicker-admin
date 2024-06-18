@@ -34,15 +34,17 @@ export async function middleware(request: NextRequest) {
       expires: date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000),
     });
   } catch (e: any) {
+    console.log("cookie here");
     if (
       e.response.includes(
         "Cookies can only be modified in a Server Action or Route Handler"
       )
     ) {
+      console.log("cookie error -- bypassing.");
       return response;
     }
     request.cookies.clear();
-    console.log(e.response);
+    console.log(e);
     return loginURL;
   }
 
