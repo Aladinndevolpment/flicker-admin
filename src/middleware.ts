@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
     });
   } catch (e: any) {
     request.cookies.clear();
-    console.error(e.response);
+    console.debug(e.response);
     return loginURL;
   }
 
