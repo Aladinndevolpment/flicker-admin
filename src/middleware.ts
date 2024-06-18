@@ -35,6 +35,7 @@ export async function middleware(request: NextRequest) {
     });
   } catch (e: any) {
     console.log("cookie here");
+    console.log(e);
     // if (
     //   e.response.includes(
     //     "Cookies can only be modified in a Server Action or Route Handler"
@@ -45,7 +46,7 @@ export async function middleware(request: NextRequest) {
     // }
     request.cookies.delete("session");
     request.cookies.delete("user");
-    console.log(e);
+
     return loginURL;
   }
 
