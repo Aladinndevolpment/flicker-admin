@@ -43,8 +43,8 @@ export async function middleware(request: NextRequest) {
     //   console.log("cookie error -- bypassing.");
     //   return response;
     // }
-    response.cookies.delete("session");
-    response.cookies.delete("user");
+    request.cookies.delete("session");
+    request.cookies.delete("user");
     console.log(e);
     return loginURL;
   }
