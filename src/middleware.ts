@@ -34,9 +34,16 @@ export async function middleware(request: NextRequest) {
       expires: date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000),
     });
   } catch (e: any) {
-    // request.cookies.clear();
-    console.debug(e.response);
-    // return loginURL;
+    if (
+      e.response.includes(
+        "Cookies can only be modified in a Server Action or Route Handler"
+      )
+    ) {
+      return response;
+    }
+    request.cookies.clear();
+    console.log(e.response);
+    return loginURL;
   }
 
   if (url) return response;
