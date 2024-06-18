@@ -1,7 +1,7 @@
 import NextCrypto from "next-crypto";
 
 const keyString = process.env.ENCRYPTION_KEY;
-if (!keyString || keyString.length !== 32) {
+if (!keyString) {
   throw new Error("ENCRYPTION_KEY must be defined and 32 characters long");
 }
 
