@@ -34,9 +34,9 @@ export async function middleware(request: NextRequest) {
       expires: date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000),
     });
   } catch (e: any) {
-    request.cookies.clear();
+    // request.cookies.clear();
     console.debug(e.response);
-    return loginURL;
+    // return loginURL;
   }
 
   if (url) return response;
