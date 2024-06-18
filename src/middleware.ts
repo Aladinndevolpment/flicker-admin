@@ -35,8 +35,15 @@ export async function middleware(request: NextRequest) {
   if (session?.value) {
     const date = new Date();
     try {
-      const res = await APIController.get(APIRoutes.me, session.value);
-      const enc_data = await encrypt(res);
+      const res = await fetch(APIRoutes.me, {
+        method: "get",
+        headers: {
+          Authorization: "Bearer " + session.value,
+        },
+      });
+      const userD = await res.json();
+      console.log(userD);
+      const enc_data = await encrypt(userD);
       response.cookies.set("user", enc_data, {
         expires: new Date(date.getTime() + 24 * 60 * 60 * 1000), // 1 day expiration
       });

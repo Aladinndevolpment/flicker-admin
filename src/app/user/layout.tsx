@@ -9,13 +9,14 @@ export default async function UserLayout({
   children: React.ReactNode;
 }) {
   const userData = cookies().get("user");
+  // console.log(userData);
   if (userData?.value) {
     // cookies().delete("session");
     // logout();
   }
 
   const user = await decrypt(userData?.value);
-  console.log(user);
+  // console.log(user);
   return (
     <DashboardLayout>
       {user?.full_name} {children}
