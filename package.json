@@ -37,7 +37,7 @@
     "formik": "^2.4.6",
     "lucide-react": "^0.395.0",
     "moment": "^2.30.1",
-    "next": "^15.0.0-rc.0",
+    "next": "14.3.0-canary.87",
     "next-crypto": "^1.0.8",
     "next-themes": "^0.3.0",
     "react": "^19.0.0-rc-107a2f8c3e-20240617",
