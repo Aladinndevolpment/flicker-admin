@@ -1,14 +1,22 @@
-import rnAxios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+interface Config {
+  url: string;
+  method: string;
+  headers?: HeadersInit;
+  body?: BodyInit | null;
+  metadata?: any;
+  signal?: AbortSignal;
+}
 
-export class Axios {
-  static abortControllers = new AbortController();
-  static axiosInstance = rnAxios.create({
-    headers: {},
-    timeout: 2 * 10000,
-    signal: Axios.abortControllers.signal,
-  });
+interface HttpMetric {
+  setHttpResponseCode: (code: number) => void;
+  setResponseContentType: (contentType: string) => void;
+  stop: () => Promise<void>;
+}
 
-  static requestInterceptor = async (config: any) => {
+class FetchAPI {
+  static abortController = new AbortController();
+
+  static async requestInterceptor(config: Config): Promise<Config> {
     try {
       console.debug(
         "============================REQUEST============================"
@@ -20,90 +28,109 @@ export class Axios {
       });
 
       // TODO: Add performance metrics.
-
-      //   const httpMetric = perf().newHttpMetric(
-      //     config.url,
-      //     config.method.toUpperCase()
-      //   );
-      //   config.metadata = { httpMetric };
-
-      //   await httpMetric.start();
+      // const httpMetric: HttpMetric = perf().newHttpMetric(config.url, config.method.toUpperCase());
+      // config.metadata = { httpMetric };
+      // await httpMetric.start();
     } finally {
       return config;
     }
-  };
+  }
 
-  static responseSuccessInterceptor = async (
-    response: AxiosResponse | any
-  ): Promise<AxiosResponse> => {
+  static async responseSuccessInterceptor(
+    response: Response,
+    config: Config
+  ): Promise<Response> {
     try {
       console.debug("Response Interceptor:", response.status);
       console.debug(
         "============================REQUEST END============================"
       );
 
-      const { httpMetric } = response.config.metadata;
-      // console.log(httpMetric);
-
-      // add any extra metric attributes if needed
-      // httpMetric.putAttribute('userId', '12345678');
-
-      httpMetric.setHttpResponseCode(response.status);
-      httpMetric.setResponseContentType(response.headers["content-type"]);
-      await httpMetric.stop();
+      if (config.metadata && config.metadata.httpMetric) {
+        const { httpMetric }: { httpMetric: HttpMetric } = config.metadata;
+        httpMetric.setHttpResponseCode(response.status);
+        httpMetric.setResponseContentType(
+          response.headers.get("content-type") || ""
+        );
+        await httpMetric.stop();
+      }
 
       // Handle response metrics if needed
     } finally {
       return response;
     }
-  };
+  }
 
-  static responseErrorInterceptor = async (
-    error: AxiosError | any
-  ): Promise<never> => {
+  static async responseErrorInterceptor(
+    error: any,
+    config: Config
+  ): Promise<never> {
     try {
-      if (error?.code == "ECONNABORTED") {
-        console.debug("Request timeout", error?.code);
-        Axios.requestTimeoutHandler();
+      if (error.name === "AbortError") {
+        console.debug("Request timeout", error.name);
+        FetchAPI.requestTimeoutHandler();
       }
 
-      const { httpMetric } = error.config.metadata;
-
-      // add any extra metric attributes if needed
-      // httpMetric.putAttribute('userId', '12345678');
-
-      httpMetric.setHttpResponseCode(error.response?.status);
-      httpMetric.setResponseContentType(
-        error.response?.headers["content-type"]
-      );
-      await httpMetric.stop();
+      if (config.metadata && config.metadata.httpMetric) {
+        const { httpMetric }: { httpMetric: HttpMetric } = config.metadata;
+        httpMetric.setHttpResponseCode(error.status || 0);
+        httpMetric.setResponseContentType(
+          error.headers ? error.headers.get("content-type") || "" : ""
+        );
+        await httpMetric.stop();
+      }
 
       // Handle error metrics if needed
     } finally {
-      // console.log(error);
-      //   crashlytics().recordError(error);
       return Promise.reject(error);
     }
-  };
-
-  static requestTimeoutHandler = () => {
-    // TODO: implement alert
-    alert("Request Timeout");
-  };
-
-  static cancelRequest() {
-    Axios.abortControllers.abort();
   }
 
-  static getInstance() {
-    Axios.axiosInstance.interceptors.request.use(Axios.requestInterceptor);
-    Axios.axiosInstance.interceptors.response.use(
-      Axios.responseSuccessInterceptor,
-      Axios.responseErrorInterceptor
-    );
+  static requestTimeoutHandler() {
+    // TODO: implement alert
+    alert("Request Timeout");
+  }
 
-    return Axios.axiosInstance;
+  static cancelRequest() {
+    FetchAPI.abortController.abort();
+  }
+
+  static async request(config: Config) {
+    const interceptedConfig = await FetchAPI.requestInterceptor(config);
+
+    try {
+      const response = await fetch(interceptedConfig.url, {
+        method: interceptedConfig.method,
+        headers: {
+          ...interceptedConfig.headers,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(interceptedConfig.body),
+        signal: FetchAPI.abortController.signal,
+      });
+
+      await FetchAPI.responseSuccessInterceptor(response, interceptedConfig);
+
+      if (!response.ok) {
+        const error: any = Error("Network response was not ok");
+        error.status = response.status;
+        error.headers = response.headers;
+        // console.log(await response.text());
+        try {
+          error.details = await error.response.json();
+        } catch (parseError) {
+          error.details = { message: "Something went wrong." };
+        }
+
+        throw error;
+      }
+      const res = await response.json();
+
+      return res;
+    } catch (error) {
+      await FetchAPI.responseErrorInterceptor(error, interceptedConfig);
+    }
   }
 }
 
-export default Axios.getInstance();
+export default FetchAPI;

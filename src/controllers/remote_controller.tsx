@@ -1,4 +1,4 @@
-import Axios from "@/lib/axios";
+import Fetch from "@/lib/axios";
 
 export default class APIController {
   constructor() {
@@ -9,19 +9,27 @@ export default class APIController {
   static headers = { "x-api-key": "api_key", token: "" };
   static async get(url: string, token?: string) {
     try {
-      const { data } = await Axios.get(url, {
+      const res = await Fetch.request({
+        method: "get",
+        url: url,
         headers: { ...APIController.headers, Authorization: "Bearer " + token },
       });
-      return data;
+      return res;
     } catch (e) {
       throw e;
     }
   }
 
-  static async post(url: string, body: any) {
+  static async post(url: string, body: any, token?: string) {
     try {
-      const { data } = await Axios.post(url, body);
-      return data;
+      const res = await Fetch.request({
+        method: "post",
+        url: url,
+        body: body,
+        headers: { ...APIController.headers, Authorization: "Bearer " + token },
+      });
+
+      return res;
     } catch (e) {
       throw e;
     }

@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
+import APIController from "@/controllers/remote_controller";
+import APIRoutes from "@/constants/api_routes";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,6 +32,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // APIController.get(APIRoutes.me).catch((e) => console.log(e.details));
+
   return (
     <html lang="en">
       <body className={poppinsRegular.className}>

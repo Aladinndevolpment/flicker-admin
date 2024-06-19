@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { encrypt } from "./utils/crypto";
-import APIController from "./controllers/remote_controller";
 import APIRoutes from "./constants/api_routes";
+import APIController from "./controllers/remote_controller";
 
 // Middleware function to handle requests
 export async function middleware(request: NextRequest) {
@@ -41,14 +41,9 @@ export async function middleware(request: NextRequest) {
   if (session?.value) {
     const date = new Date();
     try {
-      const res = await fetch(APIRoutes.me, {
-        method: "get",
-        headers: {
-          Authorization: "Bearer " + session.value,
-        },
-      });
-      const userD = await res.json();
-      console.log(userD);
+      const userD = await APIController.get(APIRoutes.me, session.value);
+
+      // console.log(userD);
       const enc_data = await encrypt(userD);
       response.cookies.set("user", enc_data, {
         expires: new Date(date.getTime() + 24 * 60 * 60 * 1000), // 1 day expiration

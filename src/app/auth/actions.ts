@@ -16,20 +16,20 @@ export async function register(values: any): Promise<void> {
 export async function login(values: any) {
   try {
     const res = await APIController.post(APIRoutes.auth, values);
-    await cookies().set("session", res.access);
     const user = await APIController.get(APIRoutes.me, res.access);
-    const date = new Date();
     console.log(user);
+    const date = new Date();
     const enc_data = await encrypt(user);
-    cookies().set("user", enc_data, {
+    await cookies().set("session", res.access);
+    await cookies().set("user", enc_data, {
       expires: new Date(date.getTime() + 24 * 60 * 60 * 1000), // 1 day expiration
     });
     return { status: 200, data: res };
   } catch (e: any) {
-    // console.log(e);
+    // console.log("here");
     return {
-      status: e.response.status,
-      data: e.response.data,
+      status: e.status,
+      data: e.details,
     };
   }
 }
