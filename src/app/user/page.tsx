@@ -17,8 +17,6 @@ import {
 } from "@/app/components/ui/accordion";
 import { columns } from "./components/columns";
 import { DataTable } from "@/app/components/controls/datatable";
-import APIController from "@/controllers/remote_controller";
-import APIRoutes from "@/constants/api_routes";
 
 export default async function Home() {
   // const posts = await APIController.get(APIRoutes.posts);

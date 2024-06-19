@@ -115,10 +115,14 @@ class FetchAPI {
         const error: any = Error("Network response was not ok");
         error.status = response.status;
         error.headers = response.headers;
-        // console.log(await response.text());
+
         try {
-          error.details = await error.response.json();
+          error.details = await response.json();
         } catch (parseError) {
+          // if (error.status == 404) {
+          //   error.details = { message: "Resource not found." };
+          //   return;
+          // }
           error.details = { message: "Something went wrong." };
         }
 

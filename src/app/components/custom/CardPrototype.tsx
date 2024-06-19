@@ -12,7 +12,7 @@ export default function CardPrototype({
     <div
       // key={pathName}
 
-      className={`bg-background border-border border px-4 py-6 rounded-2xl shadow-md w-full h-full overflow-x-hidden hover:scale-[101%]  transition-all ${className}`}
+      className={`bg-background dark:bg-slate-950 border-border border px-4 py-6 rounded-2xl shadow-md w-full h-full overflow-x-hidden hover:scale-[101%]  transition-all ${className}`}
     >
       {children}
     </div>

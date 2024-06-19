@@ -1,12 +1,20 @@
 "use client";
-import { ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import LayoutContextProvider, { LayoutContext } from "./context";
 import DrawerToggle from "./components/DrawerToggle";
 
 import { usePathname } from "next/navigation";
-import Logout from "../user/components/logout";
+import { User } from "../models/user";
+
+export const UserContext = createContext<{
+  user?: User | null;
+  setUser: Function;
+}>({
+  user: null,
+  setUser: (arg: any) => {},
+});
 
 function Main({ children }: { children: ReactNode }) {
   const { isDrawerCollapsed } = useContext(LayoutContext);
@@ -14,7 +22,6 @@ function Main({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Logout />
       {isDrawerCollapsed && (
         <div className="block md:hidden fixed top-0 left-0">
           <DrawerToggle />
@@ -58,10 +65,19 @@ function Main({ children }: { children: ReactNode }) {
     </>
   );
 }
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function DashboardLayout({
+  children,
+  userData,
+}: {
+  children: ReactNode;
+  userData: any;
+}) {
+  const [user, setUser] = useState(userData);
   return (
-    <LayoutContextProvider>
-      <Main>{children}</Main>
-    </LayoutContextProvider>
+    <UserContext.Provider value={{ user, setUser }}>
+      <LayoutContextProvider>
+        <Main>{children}</Main>
+      </LayoutContextProvider>
+    </UserContext.Provider>
   );
 }

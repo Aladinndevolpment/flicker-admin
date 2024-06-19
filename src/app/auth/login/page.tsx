@@ -41,11 +41,10 @@ export default function Login() {
       })
       .catch((e) => {
         console.log(e);
-        if (e.status == 404)
-          setErrors({ email: "Something went wrong please try again later." });
+
         setSubmitting(false);
 
-        if (e.status == 401 || e.status == 400) {
+        if (e.status >= 400) {
           if (e.data.email) {
             setFieldError("email", e.data.email[0]);
           }
@@ -61,6 +60,8 @@ export default function Login() {
           if (e.data.message) {
             setFieldError("email", e.data.message);
           }
+        } else {
+          setFieldError("email", e.data.message);
         }
       });
   }

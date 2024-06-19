@@ -26,7 +26,7 @@ export async function login(values: any) {
     });
     return { status: 200, data: res };
   } catch (e: any) {
-    // console.log("here");
+    // console.log(e.details);
     return {
       status: e.status,
       data: e.details,
