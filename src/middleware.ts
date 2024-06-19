@@ -7,10 +7,16 @@ import APIRoutes from "./constants/api_routes";
 export async function middleware(request: NextRequest) {
   const url = request.url;
   const session = request.cookies.get("session");
+  const user = request.cookies.get("user");
 
   // Handle requests to /auth/login
   if (url.includes("/auth/login")) {
     if (!session) {
+      if (user) {
+        const r = NextResponse.next();
+        r.cookies.delete("user");
+        return r;
+      }
       return NextResponse.next();
     } else {
       return NextResponse.redirect(new URL("/user", url));
@@ -26,7 +32,7 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   // If user and session cookies exist, proceed
-  const user = request.cookies.get("user");
+
   if (user?.value && session?.value) {
     return response;
   }
