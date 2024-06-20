@@ -2,8 +2,6 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
-import APIController from "@/controllers/remote_controller";
-import APIRoutes from "@/constants/api_routes";
 
 const inter = Inter({
   subsets: ["latin"],

@@ -1,10 +1,7 @@
 import HeaderSearch from "./HeaderSearch";
-import { MdTour, MdNotificationsNone } from "react-icons/md";
 import DrawerToggle from "./DrawerToggle";
 import ProfileBadge from "./ProfileBadge";
 import { ModeToggle } from "@/app/components/ThemeToggler";
-import { NavigationMenuDemo } from "../Nav";
-import { Button } from "@/app/components/ui/button";
 
 export default function Header() {
   return (
